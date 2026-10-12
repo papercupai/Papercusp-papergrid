@@ -1,8 +1,12 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { gateParticipationConfig, gateParticipationServerConfig } from '@papercusp/test-config/vitest-config';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  root: __dirname,
+  // import.meta.url, not the CommonJS `__dirname`: the committed-source loader makes Vite import
+  // this config natively as ES, where `__dirname` is undefined (WI-6554700010009145).
+  root: dirname(fileURLToPath(import.meta.url)),
   // libs/generic/papergrid/package.json declares npm workspaces, so Vite's default fs.allow stops
   // at papergrid and a jsdom file cannot load the gate's setup file from libs/test-config
   // (WI-10003808). This widens it to the monorepo root, exactly as defineVitestConfig does.
